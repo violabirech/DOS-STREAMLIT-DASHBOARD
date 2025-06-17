@@ -1,5 +1,5 @@
 import streamlit as st
-st.set_page_config(page_title="🚨 DoS Anomaly Detection", layout="wide")
+st.set_page_config(page_title="DoS Anomaly Detection", layout="wide")
 
 import pandas as pd
 import numpy as np
@@ -12,7 +12,7 @@ from streamlit_autorefresh import st_autorefresh
 
 # --- InfluxDB Configuration ---
 INFLUXDB_URL = "https://us-east-1-1.aws.cloud2.influxdata.com"
-INFLUXDB_TOKEN = "your_token_here"  # Replace this
+INFLUXDB_TOKEN = "DfmvA8hl5EeOcpR-d6c_ep6dRtSRbEcEM_Zqp8-1746dURtVqMDGni4rRNQbHouhqmdC7t9Kj6Y-AyOjbBg-zg=="  # Replace this
 INFLUXDB_ORG = "Anormally Detection"
 INFLUXDB_BUCKET = "realtime"
 MEASUREMENT = "network_traffic"
