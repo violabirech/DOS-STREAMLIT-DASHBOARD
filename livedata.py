@@ -3,11 +3,9 @@ st.set_page_config(page_title="DoS Anomaly Detection", layout="wide")
 
 import pandas as pd
 import numpy as np
-import uuid
 from sklearn.ensemble import IsolationForest
 from influxdb_client import InfluxDBClient
 import plotly.express as px
-from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 
 # --- InfluxDB Configuration ---
@@ -75,7 +73,7 @@ with tabs[0]:
 
 # --- Tab 2: Live Stream ---
 with tabs[1]:
-    st.header("📡 Live DoS Stream (Auto-refresh)")
+    st.header("📡 Live DoS Stream (Auto-refresh every 10s)")
     st_autorefresh(interval=10000, key="live_tab_refresh")
     df = query_influx(start="-1m", limit=200)
     if not df.empty:
@@ -110,7 +108,7 @@ with tabs[3]:
         fig = px.histogram(df, x="anomaly", color="anomaly", title="Anomaly Count", nbins=2)
         st.plotly_chart(fig, use_container_width=True)
 
-        line = px.line(df, x="timestamp", y="packet_rate", color="anomaly", title="Packet Rate")
+        line = px.line(df, x="timestamp", y="packet_rate", color="anomaly", title="Packet Rate Over Time")
         st.plotly_chart(line, use_container_width=True)
     else:
         st.info("Metrics not available")
@@ -122,6 +120,6 @@ with tabs[4]:
     if not df.empty:
         df = detect_anomalies(df)
         st.dataframe(df.tail(100), use_container_width=True)
-        st.download_button("📥 Download CSV", df.to_csv(index=False), "historical_dos.csv", "text/csv")
+        st.download_button("📥 Download Historical CSV", df.to_csv(index=False), "historical_dos.csv", "text/csv")
     else:
         st.info("No historical data found.")
