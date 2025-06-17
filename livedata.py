@@ -16,7 +16,7 @@ INFLUXDB_BUCKET = "realtime"
 MEASUREMENT = "network_traffic"
 
 # --- Query InfluxDB ---
-def query_influx(start="-5h", limit=1000):
+def query_influx(start="-500h", limit=1000):
     try:
         client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
         query = f'''
