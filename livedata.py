@@ -10,7 +10,7 @@ from streamlit_autorefresh import st_autorefresh
 
 # --- InfluxDB Configuration ---
 INFLUXDB_URL = "https://us-east-1-1.aws.cloud2.influxdata.com"
-INFLUXDB_TOKEN = "DfmvA8hl5EeOcpR-d6c_ep6dRtSRbEcEM_Zqp8-1746dURtVqMDGni4rRNQbHouhqmdC7t9Kj6Y-AyOjbBg-zg=="  # Replace this
+INFLUXDB_TOKEN = "DfmvA8hl5EeOcpR-d6c_ep6dRtSRbEcEM_Zqp8-1746dURtVqMDGni4rRNQbHouhqmdC7t9Kj6Y-AyOjbBg-zg=="
 INFLUXDB_ORG = "Anormally Detection"
 INFLUXDB_BUCKET = "realtime"
 MEASUREMENT = "network_traffic"
@@ -29,8 +29,19 @@ def query_influx(start="-5h", limit=1000):
           |> limit(n: {limit})
         '''
         df = client.query_api().query_data_frame(query)
+
+        if df.empty or "_time" not in df.columns:
+            return pd.DataFrame()
+
         df = df.rename(columns={"_time": "timestamp"})
-        return df[["timestamp", "packet_rate", "packet_length", "inter_arrival_time"]].dropna()
+
+        required_cols = {"timestamp", "packet_rate", "packet_length", "inter_arrival_time"}
+        if not required_cols.issubset(df.columns):
+            # Uncomment for debug
+            # st.write("Returned columns:", df.columns)
+            return pd.DataFrame()
+
+        return df[list(required_cols)].dropna()
     except Exception as e:
         st.error(f"InfluxDB Error: {e}")
         return pd.DataFrame()
